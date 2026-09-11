@@ -22,6 +22,7 @@ jobs:
           echo "✅ PR tiene descripción"
 
       - name: Verificar que referencia un issue
+        if: "!contains(github.event.pull_request.labels.*.name, 'skip-issue-check')"
         shell: bash
         run: |
           if ! echo "${{ github.event.pull_request.body }}" | grep -qi "closes #\|fixes #\|refs #"; then
