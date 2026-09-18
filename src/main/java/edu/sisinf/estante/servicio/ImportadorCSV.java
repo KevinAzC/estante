@@ -83,8 +83,12 @@ public class ImportadorCSV {
                 numeroLinea++;
             }
 
+        } catch (ErrorPersistencia e) {
+            throw e;
         } catch (IOException e) {
             throw new ErrorPersistencia("Error al leer el archivo CSV: " + e.getMessage(), e);
+        } catch (SQLException e) {
+            throw new ErrorPersistencia("Error de base de datos al importar CSV: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ErrorPersistencia("Error al importar CSV: " + e.getMessage(), e);
         }
