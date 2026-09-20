@@ -192,7 +192,7 @@ Gestiona el almacenamiento y recuperación del historial de consultas.
 
 Permite importar información desde archivos CSV.
 
-### ValidadorSQL
+### SqlValidator
 
 Valida consultas SQL antes de su ejecución.
 
@@ -212,7 +212,7 @@ PanelEditorSQL.fxml
 PanelEditorSQLController
    │
    ▼
-ValidadorSQL
+SqlValidator
    │
    ▼
 EjecutorQuery

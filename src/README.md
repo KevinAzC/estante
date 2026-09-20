@@ -107,7 +107,6 @@ Contiene funciones auxiliares reutilizables.
 Clases principales:
 
 * SqlValidator
-* ValidadorSQL
 * LoggerConsole
 * StringUtils
 * Responsabilidades:
