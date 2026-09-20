@@ -61,7 +61,7 @@ Estante ayuda a resolver:
 
 ```bash
 # 1. Clona el repositorio:
-git clone https://github.com/tu-usuario/estante.git
+git clone https://github.com/sis-inf/estante.git
 cd estante
 
 # 2. Compila el proyecto:
