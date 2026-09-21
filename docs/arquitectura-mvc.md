@@ -22,13 +22,9 @@ Representa una conexión configurada por el usuario hacia una base de datos. Con
 
 Representa una tabla existente dentro de un esquema de base de datos.
 
-### Columna
-
-Representa una columna perteneciente a una tabla.
-
 ### ColumnaInfo
 
-Almacena información detallada sobre una columna, incluyendo características utilizadas durante la exploración de esquemas.
+Almacena información detallada sobre una columna perteneciente a una tabla, incluyendo características utilizadas durante la exploración de esquemas.
 
 ### Esquema
 
