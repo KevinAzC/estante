@@ -14,7 +14,7 @@ y este proyecto adhiere a [SemVer](https://semver.org/spec/v2.0.0.html).
 - Módulo de persistencia y soporte para base de datos PostgreSQL.
 - Componente `ExportadorJSON` para la extracción estructurada de datos.
 - Panel de administración e historial de consultas mediante `HistorialQuerys`.
-- Motor de validación semántica mediante `ValidadorSQL`.
+- Motor de validación semántica mediante `SqlValidator`.
 - Herramienta de generación dinámica de sentencias mediante `GeneradorSQL`.
 
 ### Corregido

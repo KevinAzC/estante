@@ -72,7 +72,7 @@ El sistema sigue una arquitectura MVC (Model-View-Controller) con capas bien def
 |  ExportadorExcel          |
 |  ImportadorCSV            |
 |  HistorialQuerys          |
-|  ValidadorSQL             |
+|  SqlValidator             |
 |  GeneradorSQL             |
 |  GestorFavoritos          |
 |  ConexionTester           |
@@ -135,7 +135,7 @@ Contiene la lógica de negocio del sistema.
 - `ExportadorExcel` — Exporta ResultadoQuery a archivo .xlsx con Apache POI
 - `ImportadorCSV` — Importa datos desde CSV a una tabla existente
 - `HistorialQuerys` — Registro FIFO de las últimas 50 queries ejecutadas
-- `ValidadorSQL` — Valida y clasifica sentencias SQL
+- `SqlValidator` — Valida y clasifica sentencias SQL
 - `GeneradorSQL` — Genera sentencias SQL (CREATE TABLE, etc.)
 - `GestorFavoritos` — Gestiona queries marcadas como favoritas
 - `GeneradorCreateTable` — Genera DDL CREATE TABLE desde metadata
@@ -252,7 +252,7 @@ El proyecto se encuentra en desarrollo activo. Durante el sprint actual se incor
 - `ExportadorExcel` — Exportación a Excel con Apache POI
 - `ImportadorCSV` — Importación desde CSV
 - `HistorialQuerys` — Historial de queries
-- `ValidadorSQL` — Validación de sentencias SQL
+- `SqlValidator` — Validación de sentencias SQL
 - `GeneradorSQL` — Generación de SQL
 - `GestorFavoritos` — Gestión de favoritos
 - `ConexionDAOPostgreSQL` — Soporte para PostgreSQL
