@@ -20,6 +20,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Ejecutar pruebas
+        run: mvn -B test --no-transfer-progress
+
       - name: Empaquetar JAR (Shaded)
         run: mvn -B package --no-transfer-progress
 
