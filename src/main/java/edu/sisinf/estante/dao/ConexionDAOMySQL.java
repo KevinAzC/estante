@@ -73,7 +73,10 @@ public class ConexionDAOMySQL implements IConexionDAO {
     }
 
     @Override
-    public List<String> getTablas(String nombreBaseDatos) throws SQLException {
+    public List<String> getTablas(String nombreBaseDatos) throws SQLException, ErrorConexion {
+         if (nombreBaseDatos == null || !nombreBaseDatos.matches("[a-zA-Z0-9_]+")) {
+            throw new ErrorConexion("Nombre de base de datos inválido: " + nombreBaseDatos);
+        }
         List<String> tablas = new ArrayList<>();
 
         String url = String.format("jdbc:mysql://localhost:%s/%s?%s",
