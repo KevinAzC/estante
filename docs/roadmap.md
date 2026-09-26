@@ -34,3 +34,9 @@ Este documento describe las funcionalidades actuales y las planificadas para fut
 | Funcionalidad | Estado | Prioridad | Dificultad |
 |--------------|---------|------------|------------|
 | Cifrado de contraseñas | Planificado | Alta | Media |
+
+## Integraciones
+
+| Funcionalidad | Estado | Prioridad | Dificultad |
+|--------------|---------|------------|------------|
+| Servidor MCP (asistentes de IA) | Planificado | Media | Alta |
