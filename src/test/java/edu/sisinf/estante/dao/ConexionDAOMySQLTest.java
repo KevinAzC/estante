@@ -67,4 +67,19 @@ class ConexionDAOMySQLTest {
 
         assertThrows(ErrorConexion.class, () -> dao.abrir(conexion));
     }
+
+    @Test
+    void probarDevuelveFalseConCredencialesInvalidas() {
+        ConexionDAOMySQL dao = new ConexionDAOMySQL();
+
+        Conexion conexion = new Conexion();
+        conexion.setTipoMotor(TipoMotor.MYSQL);
+        conexion.setHost("localhost");
+        conexion.setPuerto(65534);
+        conexion.setBasedatos("base_inexistente");
+        conexion.setUsuario("usuario_invalido");
+        conexion.setPassword("password_invalido");
+
+        assertFalse(dao.probar(conexion));
+    }
 }

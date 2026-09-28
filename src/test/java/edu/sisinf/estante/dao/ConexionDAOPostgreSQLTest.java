@@ -82,4 +82,19 @@ class ConexionDAOPostgreSQLTest {
 
         assertThrows(ErrorConexion.class, () -> dao.abrir(conexion));
     }
+
+    @Test
+    void probarDevuelveFalseConCredencialesInvalidas() {
+        ConexionDAOPostgreSQL dao = new ConexionDAOPostgreSQL();
+
+        Conexion conexion = new Conexion();
+        conexion.setTipoMotor(TipoMotor.POSTGRESQL);
+        conexion.setHost("localhost");
+        conexion.setPuerto(65533);
+        conexion.setBasedatos("base_inexistente");
+        conexion.setUsuario("usuario_invalido");
+        conexion.setPassword("password_invalido");
+
+        assertFalse(dao.probar(conexion));
+    }
 }
