@@ -28,6 +28,7 @@ Este documento describe las funcionalidades actuales y las planificadas para fut
 | Favoritos | Implementado | Media | Baja |
 | Resaltado de sintaxis | Implementado | Alta | Media |
 | Autocompletado | Planificado | Alta | Alta |
+| Tema oscuro | Planificado | Media | Media |
 
 ## Seguridad
 
