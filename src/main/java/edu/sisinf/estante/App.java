@@ -263,6 +263,10 @@ public class App extends Application {
 
                 try {
 
+                    if (!controller.validarFormulario()) {
+                        return;
+                    }
+
                     Conexion conexion =
                             controller.construirConexion();
 

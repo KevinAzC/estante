@@ -17,12 +17,12 @@ import java.util.Map;
 /**
  * Controller del diálogo modal para crear una nueva conexión.
  *
- * <p>Este controller es deliberadamente "tonto": no contiene lógica de persistencia
- * ni de prueba de conexión. Solo gestiona la UI y construye el objeto {@link Conexion}
- * con los datos ingresados por el usuario.</p>
+ * <p>Este controller no contiene lógica de persistencia. Gestiona la UI y construye
+ * el objeto {@link Conexion} con los datos ingresados por el usuario.</p>
  *
- * <p>El handler de "Guardar" se inyecta desde fuera del controller. "Probar" se
- * registra solo en el FXML y usa los DAOs recibidos con {@link #setDaos}.</p>
+ * <p>El handler de "Guardar" se inyecta desde fuera del controller. El de "Probar"
+ * está registrado en el FXML ({@code onAction="#handleProbarConexion"}) y prueba la
+ * conexión real con el DAO recibido en {@link #setDaos}.</p>
  */
 public class DialogoNuevaConexionController {
 
@@ -107,6 +107,71 @@ public class DialogoNuevaConexionController {
     // --------------------------------------------------------
 
     /**
+     * Valida los campos obligatorios del formulario según el motor seleccionado.
+     *
+     * @return {@code true} si el formulario es válido; {@code false} en caso contrario
+     */
+    public boolean validarFormulario() {
+        String error = obtenerErrorValidacion();
+
+        if (error == null) {
+            return true;
+        }
+
+        etiquetaEstado.setText("❌ " + error);
+        etiquetaEstado.setStyle("-fx-text-fill: #e74c3c;");
+        return false;
+    }
+
+    /**
+     * Obtiene el primer error de validación encontrado.
+     *
+     * @return mensaje de error o {@code null} si los datos son válidos
+     */
+    private String obtenerErrorValidacion() {
+        TipoMotor motor = comboMotor.getValue();
+
+        if (motor == null) {
+            return "Seleccione un motor de base de datos.";
+        }
+
+        if (campoNombre.getText() == null || campoNombre.getText().isBlank()) {
+            return "El nombre de la conexión es obligatorio.";
+        }
+
+        if (motor == TipoMotor.SQLITE) {
+            if (campoBaseDatos.getText() == null || campoBaseDatos.getText().isBlank()) {
+                return "El archivo de SQLite es obligatorio.";
+            }
+            return null;
+        }
+
+        if (campoHost.getText() == null || campoHost.getText().isBlank()) {
+            return "El host es obligatorio.";
+        }
+
+        if (campoUsuario.getText() == null || campoUsuario.getText().isBlank()) {
+            return "El usuario es obligatorio.";
+        }
+
+        String puertoTexto = campoPuerto.getText();
+        if (puertoTexto == null || puertoTexto.isBlank()) {
+            return "El puerto es obligatorio.";
+        }
+
+        try {
+            int puerto = Integer.parseInt(puertoTexto.strip());
+            if (puerto < 1 || puerto > 65535) {
+                return "El puerto debe estar entre 1 y 65535.";
+            }
+        } catch (NumberFormatException e) {
+            return "El puerto debe ser un número válido.";
+        }
+
+        return null;
+    }
+
+    /**
      * Construye un objeto {@link Conexion} con los valores actuales del formulario.
      *
      * <ul>
@@ -162,7 +227,8 @@ public class DialogoNuevaConexionController {
     }
 
     /**
-     * Devuelve el botón "Probar" para que la integración le conecte su handler.
+     * Devuelve el botón "Probar". Su handler ya está registrado en el FXML
+     * ({@code onAction="#handleProbarConexion"}).
      *
      * @return botón Probar
      */
@@ -198,11 +264,16 @@ public class DialogoNuevaConexionController {
     }
 
     /**
-     * Handler del botón "Probar" (registrado solo en el FXML).
-     * Prueba la conexión real con el DAO del motor seleccionado.
+     * Handler del botón "Probar", registrado en el FXML
+     * ({@code onAction="#handleProbarConexion"}).
+     * Valida el formulario y prueba la conexión real con el DAO del motor seleccionado.
      */
     @FXML
     private void handleProbarConexion() {
+        if (!validarFormulario()) {
+            return;
+        }
+
         try {
             Conexion conexion = construirConexion();
             IConexionDAO dao = daos.get(conexion.getTipoMotor());
