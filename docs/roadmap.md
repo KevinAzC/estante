@@ -17,7 +17,7 @@ Este documento describe las funcionalidades actuales y las planificadas para fut
 |--------------|---------|------------|------------|
 | CSV | Implementado | Alta | Baja |
 | JSON | Implementado | Alta | Baja |
-| Excel | Implementado | Media | Media |
+| Excel | Descartado | Media | Media |
 | PDF | Planificado | Media | Alta |
 
 ## Funcionalidades de la interfaz
@@ -35,3 +35,9 @@ Este documento describe las funcionalidades actuales y las planificadas para fut
 | Funcionalidad | Estado | Prioridad | Dificultad |
 |--------------|---------|------------|------------|
 | Cifrado de contraseñas | Planificado | Alta | Media |
+
+## Integraciones
+
+| Funcionalidad | Estado | Prioridad | Dificultad |
+|--------------|---------|------------|------------|
+| Servidor MCP (asistentes de IA) | Planificado | Media | Alta |
