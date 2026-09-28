@@ -39,7 +39,7 @@ Estante está dirigido a:
 
 - Estudiantes de ingeniería
 - Administradores de bases de datos (DBAs)
-- Desarrolladores que trabajan con MySQL
+- Desarrolladores que trabajan con MySQL, SQLite y PostgreSQL
 
 ## ¿Qué problema resuelve?
 
