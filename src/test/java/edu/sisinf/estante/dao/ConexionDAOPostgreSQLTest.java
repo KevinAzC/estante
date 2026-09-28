@@ -2,6 +2,8 @@ package edu.sisinf.estante.dao;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.SQLException;
+
 import org.junit.jupiter.api.Test;
 
 import edu.sisinf.estante.core.ErrorConexion;
@@ -96,5 +98,12 @@ class ConexionDAOPostgreSQLTest {
         conexion.setPassword("password_invalido");
 
         assertFalse(dao.probar(conexion));
+    }
+
+    @Test
+    void getTablasFallaSiNoHayServidorDisponible() {
+        ConexionDAOPostgreSQL dao = new ConexionDAOPostgreSQL();
+
+        assertThrows(SQLException.class, () -> dao.getTablas("base_inexistente"));
     }
 }
