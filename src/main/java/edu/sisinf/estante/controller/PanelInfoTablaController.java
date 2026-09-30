@@ -50,21 +50,21 @@ public class PanelInfoTablaController {
                 ));
     }
 
-    /**
+  /**
      * Carga la información de columnas de la tabla indicada.
      *
      * @param tabla     nombre de la tabla
      * @param esquema   nombre del esquema
      * @param conexion  conexión JDBC activa
-     */    
-        public void mostrarTabla(String tabla, String esquema, Connection conexion) {
+     */
+    public void mostrarTabla(String tabla, String esquema, Connection conexion) {
         labelNombreTabla.setText("Tabla: " + tabla);
         tablaColumnas.getItems().clear();
 
         List<ColumnaInfo> columnas = explorador.getColumnas(conexion, esquema, tabla);
         tablaColumnas.getItems().setAll(columnas);
     }
-
+    
     /**
      * Limpia el panel cuando no hay tabla seleccionada.
      */
