@@ -72,7 +72,7 @@ public class EjecutorQuery {
 
         } catch (SQLException e) {
             logger.error("Error al ejecutar la consulta SQL: {}", sql, e);
-            throw new ErrorQuery("Error al ejecutar la consulta SQL: " + e.getMessage(), e);
+            throw new ErrorQuery(e.getMessage(), e);
         }
     }
 }
