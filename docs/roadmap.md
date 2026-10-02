@@ -34,3 +34,5 @@ Este documento describe las funcionalidades actuales y las planificadas para fut
 | Funcionalidad | Estado | Prioridad | Dificultad |
 |--------------|---------|------------|------------|
 | Cifrado de contraseñas | Planificado | Alta | Media |
+
+-[] Implementar verificación de contraseñas comprometidas (HIBP)
