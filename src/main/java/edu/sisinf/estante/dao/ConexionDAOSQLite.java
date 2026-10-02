@@ -83,7 +83,7 @@ public class ConexionDAOSQLite implements IConexionDAO {
 
         List<String> tablas = new ArrayList<>();
 
-        String url = "jdbc:sqlite:" + nombreBaseDatos;
+        String url = construirUrl(ultimaConexion);
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement();
