@@ -49,8 +49,8 @@ public class PanelInfoTablaController {
                                 : ""
                 ));
     }
-
-  /**
+    
+    /**
      * Carga la información de columnas de la tabla indicada.
      *
      * @param tabla     nombre de la tabla
