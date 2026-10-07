@@ -26,16 +26,37 @@ public class ConexionDAOSQLite implements IConexionDAO {
 
     private Conexion ultimaConexion;
 
+    /**
+     * Devuelve el motor de base de datos que maneja esta implementación.
+     *
+     * @return {@link TipoMotor#SQLITE}
+     */
     @Override
     public TipoMotor motor() {
         return TipoMotor.SQLITE;
     }
 
+    /**
+     * Construye la URL JDBC para SQLite con el formato
+     * {@code jdbc:sqlite:<ruta>}, donde {@code <ruta>} es el valor
+     * del campo {@code basedatos} del objeto {@link Conexion}.
+     *
+     * @param conexion Objeto con los datos de conexión.
+     * @return URL JDBC para SQLite.
+     */
     @Override
     public String construirUrl(Conexion conexion) {
         return "jdbc:sqlite:" + conexion.getBasedatos();
     }
 
+    /**
+     * Abre una conexión a la base de datos SQLite.
+     *
+     * @param conexion Objeto con los datos de conexión.
+     * @return Conexión JDBC activa.
+     * @throws ErrorConexion si el motor no es SQLite o la ruta está vacía.
+     * @throws SQLException  si el driver falla al conectar.
+     */
     @Override
     public Connection abrir(Conexion conexion) throws ErrorConexion, SQLException {
 
@@ -61,7 +82,7 @@ public class ConexionDAOSQLite implements IConexionDAO {
 
         List<String> tablas = new ArrayList<>();
 
-        String url = "jdbc:sqlite:" + nombreBaseDatos;
+        String url = construirUrl(ultimaConexion);
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement();
@@ -76,6 +97,12 @@ public class ConexionDAOSQLite implements IConexionDAO {
         return tablas;
     }
 
+    /**
+     * Prueba si la conexión a la base de datos SQLite es válida.
+     *
+     * @param conexion Objeto con los datos de conexión.
+     * @return {@code true} si la conexión es válida, {@code false} en caso contrario.
+     */
     @Override
     public boolean probar(Conexion conexion) {
         try (Connection conn = abrir(conexion)) {
