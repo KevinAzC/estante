@@ -13,6 +13,7 @@ y este proyecto adhiere a [SemVer](https://semver.org/spec/v2.0.0.html).
 - Guía de instalación y configuración para entorno local.
 - Módulo de persistencia y soporte para base de datos PostgreSQL.
 - Componente `ExportadorJSON` para la extracción estructurada de datos.
+- Componente `ExportadorExcel` para la exportación de resultados de consultas a archivos Excel (.xlsx) usando Apache POI.
 - Panel de administración e historial de consultas mediante `HistorialQuerys`.
 - Motor de validación semántica mediante `SqlValidator`.
 - Herramienta de generación dinámica de sentencias mediante `GeneradorSQL`.
