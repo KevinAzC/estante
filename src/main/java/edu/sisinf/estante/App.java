@@ -9,6 +9,7 @@ import edu.sisinf.estante.modelo.Esquema;
 import edu.sisinf.estante.modelo.ResultadoQuery;
 import edu.sisinf.estante.modelo.TipoMotor;
 import edu.sisinf.estante.servicio.EjecutorQuery;
+import edu.sisinf.estante.servicio.EjecutorQueryAsync;
 import edu.sisinf.estante.servicio.ExploradorEsquemas;
 import edu.sisinf.estante.servicio.ExportadorCSV;
 import edu.sisinf.estante.util.SqlValidator;
@@ -38,6 +39,8 @@ public class App extends Application {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
     private Connection conexionActiva;
+    private Conexion conexionInfoActiva;
+    private IConexionDAO daoActivo;
 
     private PanelArbolConexionesController arbolController;
     private PanelEditorSQLController editorController;
@@ -45,7 +48,7 @@ public class App extends Application {
     private BarraEstadoController barraEstadoController;
 
     private IRepositorioConexiones repositorio;
-    private EjecutorQuery ejecutorQuery;
+    private EjecutorQueryAsync ejecutorQueryAsync;
     private ExploradorEsquemas exploradorEsquemas;
     private ExportadorCSV exportadorCSV;
 
@@ -66,17 +69,18 @@ public class App extends Application {
         daos.put(
                 TipoMotor.MYSQL,
                 new ConexionDAOMySQL()
-            daos.put(
-        TipoMotor.POSTGRESQL,
-        new ConexionDAOPostgreSQL()
-    );
+        );
+
+        daos.put(
+                TipoMotor.POSTGRESQL,
+                new ConexionDAOPostgreSQL()
         );
 
         repositorio = new RepositorioConexionesJSON(
                 ConfiguracionApp.archivoConexiones()
         );
 
-        ejecutorQuery = new EjecutorQuery();
+        ejecutorQueryAsync = new EjecutorQueryAsync();
         exploradorEsquemas = new ExploradorEsquemas();
         exportadorCSV = new ExportadorCSV();
 
@@ -223,6 +227,12 @@ public class App extends Application {
         editorController
                 .setOnEjecutar(this::ejecutarSQL);
 
+        editorController
+                .setOnResultado(this::manejarResultadoQuery);
+
+        editorController
+                .setOnError(this::manejarErrorQuery);
+
         resultadoController
                 .setOnExportar(this::exportarCSV);
     }
@@ -256,48 +266,16 @@ public class App extends Application {
             dialog.initModality(Modality.APPLICATION_MODAL);
 
             dialog.setScene(new Scene(root));
-            controller.getBotonProbar().setOnAction(event -> {
-
-    try {
-
-        Conexion conexion =
-                controller.construirConexion();
-
-        IConexionDAO dao =
-                daos.get(conexion.getTipoMotor());
-
-        long inicio =
-                System.currentTimeMillis();
-
-        boolean ok =
-                dao.probar(conexion);
-
-        long tiempo =
-                System.currentTimeMillis() - inicio;
-
-        controller
-                .getEtiquetaEstado()
-                .setText(
-                        (ok ? "✅ " : "❌ ")
-                                + (ok ? "Conexión exitosa" : "Conexión fallida")
-                                + " ("
-                                + tiempo
-                                + " ms)"
-                );
-
-    } catch (Exception e) {
-
-        controller
-                .getEtiquetaEstado()
-                .setText(
-                        "❌ " + obtenerMensajeError(e)
-                );
-    }
-});
+            // El botón Probar se registra solo en el FXML (handleProbarConexion).
+            controller.setDaos(daos);
 
             controller.getBotonGuardar().setOnAction(event -> {
 
                 try {
+
+                    if (!controller.validarFormulario()) {
+                        return;
+                    }
 
                     Conexion conexion =
                             controller.construirConexion();
@@ -342,6 +320,9 @@ public class App extends Application {
                     daos.get(conexion.getTipoMotor());
 
             conexionActiva = dao.abrir(conexion);
+
+            conexionInfoActiva = conexion;
+            daoActivo = dao;
 
             List<Esquema> esquemas =
                     exploradorEsquemas
@@ -388,67 +369,77 @@ public class App extends Application {
 
     private void ejecutarSQL(String sql) {
 
-        try {
-
-            if (conexionActiva == null) {
-
-                mostrarError(
-                        "Sin conexión",
-                        "No existe conexión activa",
-                        "Abra una conexión primero"
-                );
-
-                return;
-            }
-
-            if (SqlValidator.esDestructiva(sql)) {
-
-                boolean confirmar =
-                        DialogoConfirmacionDML.confirmar(sql);
-
-                if (!confirmar) {
-                    return;
-                }
-            }
-
-            ResultadoQuery resultado =
-                    ejecutorQuery.ejecutar(
-                            conexionActiva,
-                            sql
-                    );
-
-            resultadoController.mostrar(resultado);
-
-            barraEstadoController.setTiempo(
-                    resultado.getTiempoMs()
-            );
-
-            switch (resultado.getTipo()) {
-
-                case LECTURA ->
-                        barraEstadoController.setFilas(
-                                resultado.getFilas().size()
-                        );
-
-                case ESCRITURA ->
-                        barraEstadoController.setFilas(
-                                resultado.getFilasAfectadas()
-                        );
-
-                case ERROR ->
-                        barraEstadoController.setMensaje(
-                                resultado.getMensaje()
-                        );
-            }
-
-        } catch (Exception e) {
+        if (conexionActiva == null) {
 
             mostrarError(
-                    "Error SQL",
-                    "No se pudo ejecutar la query",
-                    obtenerMensajeError(e)
+                    "Sin conexión",
+                    "No existe conexión activa",
+                    "Abra una conexión primero"
             );
+
+            editorController.ocultarSpinner();
+
+            return;
         }
+
+        if (SqlValidator.esDestructiva(sql)) {
+
+            boolean confirmar =
+                    DialogoConfirmacionDML.confirmar(sql);
+
+            if (!confirmar) {
+                editorController.ocultarSpinner();
+                return;
+            }
+        }
+
+        ejecutorQueryAsync.ejecutar(
+                sql,
+                conexionInfoActiva,
+                daoActivo,
+                this::manejarResultadoQuery,
+                this::manejarErrorQuery
+        );
+    }
+
+    private void manejarResultadoQuery(ResultadoQuery resultado) {
+
+        resultadoController.mostrar(resultado);
+
+        barraEstadoController.setTiempo(
+                resultado.getTiempoMs()
+        );
+
+        switch (resultado.getTipo()) {
+
+            case LECTURA ->
+                    barraEstadoController.setFilas(
+                            resultado.getFilas().size()
+                    );
+
+            case ESCRITURA ->
+                    barraEstadoController.setFilas(
+                            resultado.getFilasAfectadas()
+                    );
+
+            case ERROR ->
+                    barraEstadoController.setMensaje(
+                            resultado.getMensaje()
+                    );
+        }
+
+        editorController.ocultarSpinner();
+    }
+
+    private void manejarErrorQuery(Throwable error) {
+
+        mostrarError(
+                "Error SQL",
+                "No se pudo ejecutar la query",
+                obtenerMensajeError(error)
+        );
+
+        editorController.ocultarSpinner();
     }
 
     private void exportarCSV(ResultadoQuery resultado) {
@@ -487,7 +478,7 @@ public class App extends Application {
         }
     }
 
-    private String obtenerMensajeError(Exception e) {
+    private String obtenerMensajeError(Throwable e) {
 
         logger.error("Error en la interfaz de usuario", e);
 

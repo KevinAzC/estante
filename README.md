@@ -15,7 +15,6 @@ Gestor de base de datos con interfaz gráfica desarrollado en Java y JavaFX.
 
 * CSV
 * JSON
-* Excel
 
 ✍️ **Editor SQL**
 
@@ -39,7 +38,7 @@ Estante está dirigido a:
 
 - Estudiantes de ingeniería
 - Administradores de bases de datos (DBAs)
-- Desarrolladores que trabajan con MySQL
+- Desarrolladores que trabajan con MySQL, SQLite y PostgreSQL
 
 ## ¿Qué problema resuelve?
 
