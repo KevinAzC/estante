@@ -27,11 +27,24 @@ public class ConexionDAOPostgreSQL implements IConexionDAO {
 
     private Conexion ultimaConexion;
 
+    /**
+     * Devuelve el motor de base de datos que maneja esta implementación.
+     *
+     * @return {@link TipoMotor#POSTGRESQL}
+     */
     @Override
     public TipoMotor motor() {
         return TipoMotor.POSTGRESQL;
     }
 
+    /**
+     * Construye la URL JDBC para PostgreSQL con el formato
+     * {@code jdbc:postgresql://<host>:<puerto>/<basedatos>}.
+     * Si el puerto es {@code null}, se usa {@code 5432} por defecto.
+     *
+     * @param conexion Objeto con los datos de conexión.
+     * @return URL JDBC para PostgreSQL.
+     */
     @Override
     public String construirUrl(Conexion conexion) {
         String puerto = (conexion.getPuerto() != null)
@@ -43,6 +56,14 @@ public class ConexionDAOPostgreSQL implements IConexionDAO {
                 conexion.getBasedatos());
     }
 
+    /**
+     * Abre una conexión a la base de datos PostgreSQL.
+     *
+     * @param conexion Objeto con los datos de conexión.
+     * @return Conexión JDBC activa.
+     * @throws ErrorConexion si el motor no es PostgreSQL o faltan campos obligatorios.
+     * @throws SQLException  si el driver falla al conectar.
+     */
     @Override
     public Connection abrir(Conexion conexion) throws ErrorConexion, SQLException {
         if (conexion.getTipoMotor() != TipoMotor.POSTGRESQL) {
@@ -99,6 +120,12 @@ public class ConexionDAOPostgreSQL implements IConexionDAO {
         return tablas;
     }
 
+    /**
+     * Prueba si la conexión a la base de datos PostgreSQL es válida.
+     *
+     * @param conexion Objeto con los datos de conexión.
+     * @return {@code true} si la conexión es válida, {@code false} en caso contrario.
+     */
     @Override
     public boolean probar(Conexion conexion) {
         try (Connection conn = abrir(conexion)) {
